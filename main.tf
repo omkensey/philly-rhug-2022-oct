@@ -13,6 +13,10 @@ terraform {
 provider "ocm" {
 }
 
+variable "ocm_cluster_id" {
+  type = string
+}
+
 data "ocm_cloud_providers" "init" {
 }
 
@@ -48,7 +52,7 @@ data "external" "read_env" {
 }
 */
 
-resource "ocm_cluster" "first_cluster" {
+/*resource "ocm_cluster" "first_cluster" {
   cloud_provider = "aws"
   aws_account_id = data.aws_caller_identity.current.account_id
   aws_access_key_id = aws_iam_access_key.ose_admin.id
@@ -59,19 +63,19 @@ resource "ocm_cluster" "first_cluster" {
   ccs_enabled = true
   name = "rhug-oct-22-osd"
   product = "osd"
-}
+}*/
 
-resource "ocm_identity_provider" "first_cluster_idp" {
-  cluster = ocm_cluster.first_cluster.id
+/* resource "ocm_identity_provider" "first_cluster_idp" {
+  cluster = var.ocm_cluster_id
   name    = "first_cluster-idp"
   htpasswd = {
     username = "ose-admin"
     password = random_password.ose_admin_pass.result
   }
-}
+}*/
 
 resource "ocm_group_membership" "cluster_admin" {
-  cluster = ocm_cluster.first_cluster.id
+  cluster = var.ocm_cluster_id
   group   = "cluster-admins"
-  user    = "ose-admin"
+  user    = "cluster-admin"
 }
